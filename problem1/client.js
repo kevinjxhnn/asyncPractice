@@ -4,35 +4,38 @@ async function fetchTodosOfUsers(userIdArray, lengthOfUserIdArray, chunk) {
   let start = 0;
   let end = chunk;
   const userTodos = [];
+
   while (start < lengthOfUserIdArray) {
-    const fiveUsersTodos = [];
+    const fiveUsersPromises = [];
+
     while (start < end) {
-      const response = await fetch(
-        `http://localhost:3000/todos?user_id=${userIdArray[start]}`
-      );
-      const data = (await response.json()).todos;
-      fiveUsersTodos.push(data);
+      const promise = fetch(`http://localhost:3000/todos?user_id=${userIdArray[start]}`)
+        .then(response => response.json())
+        .then(data => data.todos);
+      fiveUsersPromises.push(promise);
 
       start++;
     }
+
+    const fiveUsersTodos = await Promise.all(fiveUsersPromises);
+
     userTodos.push(fiveUsersTodos);
 
     start = end;
     end = end + 5;
 
-    console.log(fiveUsersTodos)
+    console.log(fiveUsersTodos);
 
     if (start < lengthOfUserIdArray) {
-      await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve();
-        }, 1000);
+      await new Promise((resolve) => {
+        setTimeout(resolve, 1000);
       });
     }
   }
 
-  return userTodos;
+  return userTodos
 }
+
 fetchTodosOfUsers();
 
 // write your code here
@@ -46,6 +49,7 @@ async function main() {
   const lengthOfUserIdArray = userIdArray.length;
 
   const allTodos = await fetchTodosOfUsers(userIdArray, lengthOfUserIdArray, 5);
+  // fetchTodosOfUsers(userIdArray, lengthOfUserIdArray, 5);
 
   const result = [];
   let index = 0;
