@@ -9,9 +9,11 @@ async function fetchTodosOfUsers(userIdArray, lengthOfUserIdArray, chunk) {
     const fiveUsersPromises = [];
 
     while (start < end) {
-      const promise = fetch(`http://localhost:3000/todos?user_id=${userIdArray[start]}`)
-        .then(response => response.json())
-        .then(data => data.todos);
+      const promise = fetch(
+        `http://localhost:3000/todos?user_id=${userIdArray[start]}`
+      )
+        .then((response) => response.json())
+        .then((data) => data.todos);
       fiveUsersPromises.push(promise);
 
       start++;
@@ -33,23 +35,10 @@ async function fetchTodosOfUsers(userIdArray, lengthOfUserIdArray, chunk) {
     }
   }
 
-  return userTodos
+  return userTodos;
 }
 
-fetchTodosOfUsers();
-
-// write your code here
-async function main() {
-  const userResponse = await fetch("http://localhost:3000/users");
-  const userData = (await userResponse.json()).users;
-
-  const userName = userData.map((user) => user.name);
-  const userIdArray = userData.map((user) => user.id);
-
-  const lengthOfUserIdArray = userIdArray.length;
-
-  const allTodos = await fetchTodosOfUsers(userIdArray, lengthOfUserIdArray, 5);
-
+async function calculateTodosCompleted(allTodos, userName, userIdArray) {
   const result = [];
   let index = 0;
 
@@ -74,7 +63,24 @@ async function main() {
     }
   }
 
-  console.log(result);
+  return result;
+}
+
+fetchTodosOfUsers();
+
+// write your code here
+async function main() {
+  const userResponse = await fetch("http://localhost:3000/users");
+  const userData = (await userResponse.json()).users;
+
+  const userName = userData.map((user) => user.name);
+  const userIdArray = userData.map((user) => user.id);
+
+  const lengthOfUserIdArray = userIdArray.length;
+
+  const allTodos = await fetchTodosOfUsers(userIdArray, lengthOfUserIdArray, 5);
+
+  console.log(await calculateTodosCompleted(allTodos, userName, userIdArray));
 }
 
 main();
