@@ -49,7 +49,6 @@ async function main() {
   const lengthOfUserIdArray = userIdArray.length;
 
   const allTodos = await fetchTodosOfUsers(userIdArray, lengthOfUserIdArray, 5);
-  // fetchTodosOfUsers(userIdArray, lengthOfUserIdArray, 5);
 
   const result = [];
   let index = 0;
